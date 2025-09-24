@@ -56,17 +56,17 @@ export const Card: React.FC<Props> = ({
 
     const refetchPosts = async () => {
         switch (cardFor) {
-            case 'post':
-                await triggerGetAllPosts().unwrap();
-                break;
-            case 'current-post':
-                await triggerGetAllPosts().unwrap();
-                break;
-            case 'comment':
-                await triggerGetPostById(id).unwrap();
-                break;
+            case "post":
+                await triggerGetAllPosts().unwrap()
+                break
+            case "current-post":
+                await triggerGetAllPosts().unwrap()
+                break
+            case "comment":
+                await triggerGetPostById(id).unwrap()
+                break
             default:
-                throw new Error('Неверный аргумент cardFor');
+                throw new Error("Неверный аргумент cardFor")
         }
     }
 
@@ -75,12 +75,20 @@ export const Card: React.FC<Props> = ({
             likedByUser
                 ? await unlikePost(id).unwrap()
                 : await likedPost({ postId: id }).unwrap()
-            await triggerGetPostById(id).unwrap();
-        } catch (error) {
-            if (hasErrorField(error)) {
-                setError(error.data.error)
+
+            if (cardFor === 'current-post') {
+                await triggerGetPostById(id).unwrap()
+            }
+
+            if (cardFor === 'post') {
+                await triggerGetAllPosts().unwrap()
+            }
+
+        } catch (err) {
+            if (hasErrorField(err)) {
+                setError(err.data.error)
             } else {
-                setError(error as string)
+                setError(err as string)
             }
         }
     }
@@ -88,26 +96,28 @@ export const Card: React.FC<Props> = ({
     const handleDelete = async () => {
         try {
             switch (cardFor) {
-                case 'post':
-                    await deletePost(id).unwrap();
-                    await refetchPosts();
-                    break;
-                case 'current-post':
-                    await deletePost(id).unwrap();
-                    navigate('/');
-                    break;
-                case 'comment':
-                    await deleteComment(commentId).unwrap();
-                    await refetchPosts();
-                    break;
+                case "post":
+                    await deletePost(id).unwrap()
+                    await refetchPosts()
+                    break
+                case "current-post":
+                    await deletePost(id).unwrap()
+                    navigate('/')
+                    break
+                case "comment":
+                    await deleteComment(commentId).unwrap()
+                    await refetchPosts()
+                    break
                 default:
-                    throw new Error('Неверный аргумент cardFor');
+                    throw new Error("Неверный аргумент cardFor")
             }
-        } catch (error) {
-            if (hasErrorField(error)) {
-                setError(error.data.error)
+
+        } catch (err) {
+            console.log(err)
+            if (hasErrorField(err)) {
+                setError(err.data.error)
             } else {
-                setError(error as string)
+                setError(err as string)
             }
         }
     }
@@ -123,41 +133,37 @@ export const Card: React.FC<Props> = ({
                         description={createAt && formatToClientDate(createAt)}
                     />
                 </Link>
-                {
-                    authorId === currentUser?.id && (
-                        <div className="cursor-pointer" onClick={handleDelete}>
-                            {
-                                deletePostStatus.isLoading || deleteCommentStatus.isLoading ? (
-                                    <Spinner />
-                                ) : (
-                                    <RiDeleteBinLine />
-                                )
-                            }
-                        </div>
-                    )
-                }
+                {authorId === currentUser?.id && (
+                    <div className="cursor-pointer" onClick={handleDelete}>
+                        {deletePostStatus.isLoading || deleteCommentStatus.isLoading ? (
+                            <Spinner />
+                        ) : (
+                            <RiDeleteBinLine />
+                        )}
+                    </div>
+                )}
             </CardHeader>
+
             <CardBody className='px-3 py-2 mb-5'>
                 <Typography>{content}</Typography>
             </CardBody>
-            {
-                cardFor !== 'comment' && (
-                    <CardFooter className='gap-3'>
-                        <div className="flex gap-5 items-center">
-                            <div onClick={handleClick}>
-                                <MetaInfo
-                                    count={likesCount}
-                                    Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder}
-                                />
-                            </div>
-                            <Link to={`/posts/${id}`}>
-                                <MetaInfo count={commentsCount} Icon={FaRegComment} />
-                            </Link>
+
+            {cardFor !== 'comment' && (
+                <CardFooter className='gap-3'>
+                    <div className="flex gap-5 items-center">
+                        <div onClick={handleClick}>
+                            <MetaInfo
+                                count={likesCount}
+                                Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder}
+                            />
                         </div>
-                        <ErrorMessage error={error} />
-                    </CardFooter>
-                )
-            }
+                        <Link to={`/posts/${id}`}>
+                            <MetaInfo count={commentsCount} Icon={FaRegComment} />
+                        </Link>
+                    </div>
+                    <ErrorMessage error={error} />
+                </CardFooter>
+            )}
         </NextUiCard>
     )
 }

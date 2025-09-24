@@ -1,25 +1,25 @@
-import { Button } from '../button';
 import type { ReactElement } from "react";
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 type Props = {
-    children: React.ReactNode;
-    icon: ReactElement;
-    href: string;
-}
+  children: React.ReactNode;
+  icon: ReactElement;
+  to: string;
+};
 
-export const NavButton: React.FC<Props> = ({
-    children,
-    icon,
-    href
-}) => {
-
+export const NavButton: React.FC<Props> = ({ children, icon, to }) => {
   return (
-    <Button className='flex justufy-start text-xl' icon={icon}>
-      <Link to={ href }>
-        {children}
-      </Link>
-    </Button>
-  )
-}
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center gap-2 text-xl px-3 py-2 rounded-lg transition ${
+          isActive ? "bg-primary text-white" : "hover:bg-gray-200"
+        }`
+      }
+    >
+      {icon}
+      {children}
+    </NavLink>
+  );
+};
