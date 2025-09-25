@@ -22,7 +22,6 @@ export const Register: React.FC<Props> = ({
     const {
         handleSubmit,
         control,
-        formState: { errors }
     } = useForm<Register>({
         mode: 'onChange',
         reValidateMode: 'onBlur',

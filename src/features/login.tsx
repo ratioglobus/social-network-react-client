@@ -22,7 +22,6 @@ export const Login: React.FC<Props> = ({
   const {
     handleSubmit,
     control,
-    formState: { errors }
   } = useForm<Login>({
     mode: 'onChange',
     reValidateMode: 'onBlur',

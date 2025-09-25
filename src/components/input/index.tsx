@@ -20,7 +20,6 @@ export const Input: React.FC<Props> = ({
   type,
   control,
   required = '',
-  endContent,
 }) => {
   const {
     field,
