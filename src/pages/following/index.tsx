@@ -29,7 +29,7 @@ export const Following = () => {
     </div>
   ) : (
     <h1 className="text-gray-900 dark:text-gray-200 text-m font-semibold">
-      У вас пока нет подписчиков
+      У вас пока нет подписок
     </h1>
   )
 }

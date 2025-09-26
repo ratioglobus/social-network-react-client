@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../app/types";
 import { userApi } from "../app/services/userApi";
 import { RootState } from "../app/store";
@@ -8,7 +8,7 @@ interface InitialState {
     isAuthenticated: boolean;
     users: User[] | null;
     current: User | null;
-    token?: string
+    token?: string;
 }
 
 const initialState: InitialState = {
@@ -24,7 +24,10 @@ const slice = createSlice({
     reducers: {
         logout: () => initialState,
         resetUser: (state) => {
-            state.user = null
+            state.user = null;
+        },
+        setCurrent: (state, action: PayloadAction<User | null>) => {
+            state.current = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -41,16 +44,16 @@ const slice = createSlice({
                 state.user = action.payload;
             })
     }
-})
+});
 
-export const { logout, resetUser } = slice.actions;
+export const { logout, resetUser, setCurrent } = slice.actions;
 export default slice.reducer;
 
 export const selectIsAuthenticated = (state: RootState) => 
-    state.user.isAuthenticated
+    state.user.isAuthenticated;
 
 export const selectCurrent = (state: RootState) =>
-    state.user.current
+    state.user.current;
 
 export const selectUser = (state: RootState) =>
-    state.user.user
+    state.user.user;
