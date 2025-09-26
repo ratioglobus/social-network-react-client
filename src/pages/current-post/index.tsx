@@ -20,7 +20,8 @@ export const CurrentPost = () => {
     likes,
     author,
     likedByUser,
-    createdAt
+    createdAt,
+    imageUrl
   } = data;
 
   return (
@@ -37,25 +38,27 @@ export const CurrentPost = () => {
         id={id}
         likedByUser={likedByUser}
         createAt={createdAt}
+        imageUrl={imageUrl}
       />
       <div className='mt-10'>
         <CreateComment />
       </div>
       <div className='mt-10'>
         {
-          data.comments ?
-            data.comments.map((comment) => (
-              <Card
-                cardFor='comment'
-                key={comment.id}
-                avatarUrl={comment.user.avatarUrl ?? ''}
-                content={comment.content}
-                name={comment.user.name ?? ''}
-                authorId={comment.userId ?? ''}
-                commentId={comment.id}
-                id={id}
-              />
-            )) : null
+          comments?.length > 0
+            ? comments.map((comment) => (
+                <Card
+                  cardFor='comment'
+                  key={comment.id}
+                  avatarUrl={comment.user.avatarUrl ?? ''}
+                  content={comment.content}
+                  name={comment.user.name ?? ''}
+                  authorId={comment.userId ?? ''}
+                  commentId={comment.id}
+                  id={id}
+                />
+              ))
+            : null
         }
       </div>
     </>

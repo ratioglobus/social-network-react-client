@@ -20,7 +20,8 @@ export const Posts = () => {
             comments,
             likes,
             likedByUser,
-            createdAt
+            createdAt,
+            imageUrl
           }) => (
             <Card 
               key={id}
@@ -34,6 +35,7 @@ export const Posts = () => {
               likedByUser={likedByUser}
               createAt={createdAt}
               cardFor='post'
+              imageUrl={imageUrl}
             />
           )): null
       }

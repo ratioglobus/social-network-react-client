@@ -16,6 +16,7 @@ import { MdOutlineFavoriteBorder } from 'react-icons/md';
 import { FaRegComment } from 'react-icons/fa';
 import { ErrorMessage } from '../error-message';
 import { hasErrorField } from '../../utils/has-error-field';
+import { BASE_URL } from '../../constants';
 
 type Props = {
     avatarUrl: string;
@@ -29,6 +30,7 @@ type Props = {
     id?: string;
     cardFor: 'comment' | 'post' | 'current-post'
     likedByUser?: boolean;
+    imageUrl?: string;
 }
 
 export const Card: React.FC<Props> = ({
@@ -42,6 +44,7 @@ export const Card: React.FC<Props> = ({
     createAt,
     id = '',
     cardFor = 'post',
+    imageUrl,
     likedByUser = false
 }) => {
     const [likedPost] = useLikePostMutation();
@@ -146,6 +149,13 @@ export const Card: React.FC<Props> = ({
 
             <CardBody className='px-3 py-2 mb-5'>
                 <Typography>{content}</Typography>
+                {imageUrl && (
+                    <img
+                        src={`${BASE_URL}${imageUrl}`}
+                        alt="post"
+                        className="mt-3 rounded-md max-w-full max-h-[400px] object-contain"
+                    />
+                )}
             </CardBody>
 
             {cardFor !== 'comment' && (

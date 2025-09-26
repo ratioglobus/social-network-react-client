@@ -35,6 +35,7 @@ export type Post = {
   likedByUser: boolean
   createdAt: Date
   updatedAt: Date
+  imageUrl?: string
 }
 
 export type Like = {

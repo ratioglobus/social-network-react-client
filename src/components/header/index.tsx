@@ -23,27 +23,34 @@ export const Header = () => {
     return (
         <Navbar>
             <NavbarBrand>
-                <p className="font-bold text-foreground">Tyrell Social</p>
+                <div className="flex items-center gap-2">
+                    <img
+                        src="/global.png"
+                        alt="logo"
+                        className="w-6 h-6 object-contain"
+                    />
+                    <span className="font-bold text-foreground">Tyrell Social</span>
+                </div>
             </NavbarBrand>
 
             <NavbarContent justify='end'>
-                <NavbarItem 
+                <NavbarItem
                     className='lg:flex text-3xl cursor-pointer text-foreground'
-                    onClick={() => {toggleTheme()}}
+                    onClick={() => { toggleTheme() }}
                 >
-                    { theme === 'light' ? <FaRegMoon/> : <LuSunMedium/> }
+                    {theme === 'light' ? <FaRegMoon /> : <LuSunMedium />}
                 </NavbarItem>
 
                 <NavbarItem>
                     {
                         isAuthenticated && (
-                            <Button 
+                            <Button
                                 color='default'
                                 variant='flat'
                                 className='gap-2'
                                 onPress={handleLogout}
                             >
-                                <CiLogout/> <span>Выйти</span>
+                                <CiLogout /> <span>Выйти</span>
                             </Button>
                         )
                     }
