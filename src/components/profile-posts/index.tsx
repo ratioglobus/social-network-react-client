@@ -1,6 +1,5 @@
 import React from 'react';
 import { useGetPostsByUserQuery } from '../../app/services/postsApi';
-import { BASE_URL } from '../../constants';
 import { Card } from '../card';
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 };
 
 export const ProfilePosts: React.FC<Props> = ({ userId }) => {
-  const { data: posts, isLoading } = useGetPostsByUserQuery(userId);
+  const { data: posts, isLoading, refetch } = useGetPostsByUserQuery(userId);
 
   if (isLoading) {
     return <p>Загрузка постов...</p>;
@@ -33,7 +32,8 @@ export const ProfilePosts: React.FC<Props> = ({ userId }) => {
           commentsCount={post.comments.length}
           likedByUser={post.likedByUser}
           createAt={post.createdAt}
-          imageUrl={post.imageUrl ? `${BASE_URL}${post.imageUrl}` : undefined}
+          imageUrl={post.imageUrl ? post.imageUrl : undefined}
+          onPostUpdated={refetch}
         />
       ))}
     </div>

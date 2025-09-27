@@ -1,40 +1,45 @@
 import React, { useState, useContext } from 'react'
 import { CardBody, CardFooter, CardHeader, Card as NextUiCard, Spinner } from '@nextui-org/react'
-import { useLikePostMutation, useUnlikePostMutation } from '../../app/services/likesApi';
-import { useDeletePostMutation, useLazyGetAllPostsQuery, useLazyGetPostByIdQuery, useUpdatePostMutation } from '../../app/services/postsApi';
-import { useDeleteCommentMutation } from '../../app/services/commentsApi';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectCurrent } from '../../features/userSlice';
-import { User } from '../user';
-import { formatToClientDate } from '../../utils/format-to-client-date';
-import { RiDeleteBinLine } from 'react-icons/ri';
-import { Typography } from '../typography';
-import { MetaInfo } from '../meta-info';
-import { FcDislike } from 'react-icons/fc';
-import { MdOutlineFavoriteBorder } from 'react-icons/md';
-import { FaRegComment } from 'react-icons/fa';
-import { ErrorMessage } from '../error-message';
-import { hasErrorField } from '../../utils/has-error-field';
-import { BASE_URL } from '../../constants';
-import { ThemeContext } from '../theme-provider';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Textarea, Button } from '@nextui-org/react';
-import { FiEdit } from 'react-icons/fi';
-
+import { useLikePostMutation, useUnlikePostMutation } from '../../app/services/likesApi'
+import {
+    useDeletePostMutation,
+    useLazyGetAllPostsQuery,
+    useLazyGetPostByIdQuery,
+    useUpdatePostMutation
+} from '../../app/services/postsApi'
+import { useDeleteCommentMutation } from '../../app/services/commentsApi'
+import { Link, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { selectCurrent } from '../../features/userSlice'
+import { User } from '../user'
+import { formatToClientDate } from '../../utils/format-to-client-date'
+import { RiDeleteBinLine } from 'react-icons/ri'
+import { Typography } from '../typography'
+import { MetaInfo } from '../meta-info'
+import { FcDislike } from 'react-icons/fc'
+import { MdOutlineFavoriteBorder } from 'react-icons/md'
+import { FaRegComment } from 'react-icons/fa'
+import { ErrorMessage } from '../error-message'
+import { hasErrorField } from '../../utils/has-error-field'
+import { BASE_URL } from '../../constants'
+import { ThemeContext } from '../theme-provider'
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Textarea, Button } from '@nextui-org/react'
+import { FiEdit } from 'react-icons/fi'
 
 type Props = {
-    avatarUrl: string;
-    name: string;
-    authorId: string;
-    content: string;
-    commentId?: string;
-    likesCount?: number;
-    commentsCount?: number;
-    createAt?: Date;
-    id?: string;
+    avatarUrl: string
+    name: string
+    authorId: string
+    content: string
+    commentId?: string
+    likesCount?: number
+    commentsCount?: number
+    createAt?: Date
+    id?: string
     cardFor: 'comment' | 'post' | 'current-post'
-    likedByUser?: boolean;
-    imageUrl?: string;
+    likedByUser?: boolean
+    imageUrl?: string
+    onPostUpdated?: () => void
 }
 
 export const Card: React.FC<Props> = ({
@@ -49,34 +54,35 @@ export const Card: React.FC<Props> = ({
     id = '',
     cardFor = 'post',
     imageUrl,
-    likedByUser = false
+    likedByUser = false,
+    onPostUpdated
 }) => {
-    const [likedPost] = useLikePostMutation();
-    const [unlikePost] = useUnlikePostMutation();
-    const [triggerGetAllPosts] = useLazyGetAllPostsQuery();
-    const [triggerGetPostById] = useLazyGetPostByIdQuery();
-    const [deletePost, deletePostStatus] = useDeletePostMutation();
-    const [deleteComment, deleteCommentStatus] = useDeleteCommentMutation();
-    const [updatePost] = useUpdatePostMutation();
-    const [error, setError] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-    const [newContent, setNewContent] = useState(content);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const navigate = useNavigate();
-    const currentUser = useSelector(selectCurrent);
-    const { theme } = useContext(ThemeContext);
+    const [likedPost] = useLikePostMutation()
+    const [unlikePost] = useUnlikePostMutation()
+    const [triggerGetAllPosts] = useLazyGetAllPostsQuery()
+    const [triggerGetPostById] = useLazyGetPostByIdQuery()
+    const [deletePost, deletePostStatus] = useDeletePostMutation()
+    const [deleteComment, deleteCommentStatus] = useDeleteCommentMutation()
+    const [updatePost] = useUpdatePostMutation()
+    const [error, setError] = useState('')
+    const [isEditing, setIsEditing] = useState(false)
+    const [newContent, setNewContent] = useState(content)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const navigate = useNavigate()
+    const currentUser = useSelector(selectCurrent)
+    const { theme } = useContext(ThemeContext)
 
     const refetchPosts = async () => {
         switch (cardFor) {
-            case "post":
-            case "current-post":
+            case 'post':
+            case 'current-post':
                 await triggerGetAllPosts().unwrap()
                 break
-            case "comment":
+            case 'comment':
                 await triggerGetPostById(id).unwrap()
                 break
             default:
-                throw new Error("Неверный аргумент cardFor")
+                throw new Error('Неверный аргумент cardFor')
         }
     }
 
@@ -86,8 +92,12 @@ export const Card: React.FC<Props> = ({
                 ? await unlikePost(id).unwrap()
                 : await likedPost({ postId: id }).unwrap()
 
-            if (cardFor === 'current-post') await triggerGetPostById(id).unwrap()
-            if (cardFor === 'post') await triggerGetAllPosts().unwrap()
+            if (onPostUpdated) {
+                await onPostUpdated();
+            } else {
+                if (cardFor === 'current-post') await triggerGetPostById(id).unwrap()
+                if (cardFor === 'post') await triggerGetAllPosts().unwrap()
+            }
         } catch (err) {
             if (hasErrorField(err)) setError(err.data.error)
             else setError(err as string)
@@ -97,20 +107,20 @@ export const Card: React.FC<Props> = ({
     const handleDelete = async () => {
         try {
             switch (cardFor) {
-                case "post":
+                case 'post':
                     await deletePost(id).unwrap()
                     await refetchPosts()
                     break
-                case "current-post":
+                case 'current-post':
                     await deletePost(id).unwrap()
                     navigate('/')
                     break
-                case "comment":
+                case 'comment':
                     await deleteComment(commentId).unwrap()
                     await refetchPosts()
                     break
                 default:
-                    throw new Error("Неверный аргумент cardFor")
+                    throw new Error('Неверный аргумент cardFor')
             }
         } catch (err) {
             if (hasErrorField(err)) setError(err.data.error)
@@ -119,26 +129,31 @@ export const Card: React.FC<Props> = ({
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) setSelectedFile(e.target.files[0]);
+        if (e.target.files && e.target.files[0]) setSelectedFile(e.target.files[0])
     }
 
     const handleUpdate = async () => {
         try {
-            const formData = new FormData();
-            formData.append('content', newContent);
-            if (selectedFile) formData.append('image', selectedFile);
+            const formData = new FormData()
+            formData.append('content', newContent)
+            if (selectedFile) formData.append('image', selectedFile)
 
-            await updatePost({ id, formData }).unwrap();
-            setIsEditing(false);
-            await refetchPosts();
+            await updatePost({ id, formData }).unwrap()
+            setIsEditing(false)
+
+            if (onPostUpdated) {
+                await onPostUpdated()
+            } else {
+                await refetchPosts()
+            }
         } catch (err) {
-            console.log(err);
+            console.log(err)
         }
-    };
+    }
 
     return (
         <>
-            <NextUiCard className="mb-6">
+            <NextUiCard className='mb-6'>
                 <CardHeader className='justify-between items-center bg-transparent'>
                     <Link to={`/users/${authorId}`}>
                         <User
@@ -148,12 +163,12 @@ export const Card: React.FC<Props> = ({
                             description={createAt && formatToClientDate(createAt)}
                         />
                     </Link>
-                    {authorId === currentUser?.id && cardFor !== "comment" && (
-                        <div className="flex gap-3">
-                            <div className="cursor-pointer" onClick={() => setIsEditing(true)}>
+                    {authorId === currentUser?.id && cardFor !== 'comment' && (
+                        <div className='flex gap-3'>
+                            <div className='cursor-pointer' onClick={() => setIsEditing(true)}>
                                 <FiEdit size={16} />
                             </div>
-                            <div className="cursor-pointer" onClick={handleDelete}>
+                            <div className='cursor-pointer' onClick={handleDelete}>
                                 {deletePostStatus.isLoading || deleteCommentStatus.isLoading ? (
                                     <Spinner />
                                 ) : (
@@ -165,24 +180,21 @@ export const Card: React.FC<Props> = ({
                 </CardHeader>
 
                 <CardBody className='px-3 py-2 mb-5'>
-                    <Typography className="whitespace-pre-wrap">{content}</Typography>
+                    <Typography className='whitespace-pre-wrap'>{content}</Typography>
                     {imageUrl && (
                         <img
                             src={`${BASE_URL}${imageUrl}`}
-                            alt="post"
-                            className="mt-3 rounded-md max-w-full max-h-[400px] object-contain"
+                            alt='post'
+                            className='mt-3 rounded-md max-w-full max-h-[400px] object-contain'
                         />
                     )}
                 </CardBody>
 
                 {cardFor !== 'comment' && (
                     <CardFooter className='gap-3'>
-                        <div className="flex gap-5 items-center">
+                        <div className='flex gap-5 items-center'>
                             <div onClick={handleClick}>
-                                <MetaInfo
-                                    count={likesCount}
-                                    Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder}
-                                />
+                                <MetaInfo count={likesCount} Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder} />
                             </div>
                             <Link to={`/posts/${id}`}>
                                 <MetaInfo count={commentsCount} Icon={FaRegComment} />
@@ -206,22 +218,24 @@ export const Card: React.FC<Props> = ({
                                 fullWidth
                             />
                             <input
-                                type="file"
-                                accept="image/*"
+                                type='file'
+                                accept='image/*'
                                 onChange={handleFileChange}
-                                className="w-full rounded-md border border-gray-300 dark:border-gray-700 p-2"
+                                className='w-full rounded-md border border-gray-300 dark:border-gray-700 p-2'
                             />
                             {selectedFile && (
                                 <img
                                     src={URL.createObjectURL(selectedFile)}
-                                    alt="preview"
-                                    className="rounded-md max-h-64 w-full object-contain border border-gray-200 dark:border-gray-600"
+                                    alt='preview'
+                                    className='rounded-md max-h-64 w-full object-contain border border-gray-200 dark:border-gray-600'
                                 />
                             )}
                         </div>
                     </ModalBody>
                     <ModalFooter className='flex justify-end gap-2'>
-                        <Button color='danger' variant='flat' onPress={() => setIsEditing(false)}>Отмена</Button>
+                        <Button color='danger' variant='flat' onPress={() => setIsEditing(false)}>
+                            Отмена
+                        </Button>
                         <Button onPress={handleUpdate}>Сохранить</Button>
                     </ModalFooter>
                 </ModalContent>
