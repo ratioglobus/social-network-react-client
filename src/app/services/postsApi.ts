@@ -11,6 +11,15 @@ export const postApi = api.injectEndpoints({
             })
         }),
 
+        updatePost: builder.mutation({
+            query: ({ id, formData }) => ({
+                url: `/posts/${id}`,
+                method: 'PUT',
+                body: formData
+            }),
+            invalidatesTags: ['Posts']
+        }),
+
         getAllPosts: builder.query<Post[], void>({
             query: () => ({
                 url: '/posts',
@@ -24,7 +33,7 @@ export const postApi = api.injectEndpoints({
                 method: 'GET'
             })
         }),
-        
+
         deletePost: builder.mutation<void, string>({
             query: (id) => ({
                 url: `/posts/${id}`,
@@ -40,7 +49,8 @@ export const {
     useGetPostByIdQuery,
     useDeletePostMutation,
     useLazyGetPostByIdQuery,
-    useLazyGetAllPostsQuery
+    useLazyGetAllPostsQuery,
+    useUpdatePostMutation
 } = postApi;
 
 export const {

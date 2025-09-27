@@ -64,7 +64,7 @@ export const CreatePost = () => {
 
             <div className="flex items-center gap-3 mb-5">
                 <label className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600">
-                    Добавить фото
+                    Прикрепить фото
                     <input
                         type="file"
                         name="image"
@@ -82,7 +82,7 @@ export const CreatePost = () => {
                     className="px-4 py-2 bg-green-500 text-base text-white rounded-md cursor-pointer hover:bg-green-600"
                    
                 >
-                    Добавить пост
+                    Опубликовать пост
                 </Button>
             </div>
 

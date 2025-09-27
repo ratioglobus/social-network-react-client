@@ -19,19 +19,19 @@ export const NavBar: React.FC = () => {
         <li>
           <NavLink to="/" className={linkClasses}>
             <BsPostcard />
-            Посты
+            Лента
           </NavLink>
         </li>
         <li>
           <NavLink to="/following" className={linkClasses}>
             <FiUsers />
-            Подписки
+            Мои подписки
           </NavLink>
         </li>
         <li>
           <NavLink to="/followers" className={linkClasses}>
             <FaUsers />
-            Подписчики
+            Мои подписчики
           </NavLink>
         </li>
       </ul>

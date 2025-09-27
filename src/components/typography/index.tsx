@@ -1,15 +1,19 @@
-import React from 'react'
+import React from 'react';
 
-type Props = { 
-    children: string;
-    size?: string;
-}
+type Props = {
+  children: string;
+  size?: string;
+  className?: string;
+};
 
 export const Typography: React.FC<Props> = ({
-    children,
-    size = 'text-xl'
+  children,
+  size = 'text-xl',
+  className = ''
 }) => {
   return (
-    <p className={`${size}`}>{ children }</p>
-  )
-}
+    <p className={`${size} ${className}`}>
+      {children}
+    </p>
+  );
+};
