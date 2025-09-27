@@ -27,6 +27,14 @@ export const postApi = api.injectEndpoints({
             })
         }),
 
+        getPostsByUser: builder.query<Post[], string>({
+            query: (userId) => ({
+                url: `/users/${userId}/posts`,
+                method: 'GET'
+            }),
+            providesTags: ['Posts']
+        }),
+
         getPostById: builder.query<Post, string>({
             query: (id) => ({
                 url: `/posts/${id}`,
@@ -50,7 +58,8 @@ export const {
     useDeletePostMutation,
     useLazyGetPostByIdQuery,
     useLazyGetAllPostsQuery,
-    useUpdatePostMutation
+    useUpdatePostMutation,
+    useGetPostsByUserQuery
 } = postApi;
 
 export const {

@@ -7,6 +7,7 @@ import { selectIsAuthenticated, selectCurrent, setCurrent } from "../../features
 import { useEffect } from "react";
 import { Profile } from "../profile";
 import { useLazyCurrentQuery } from "../../app/services/userApi";
+import { ScrollToTopButton } from "../scroll-to-top-button/ScrollToTopButton";
 
 export const Layout = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -46,6 +47,7 @@ export const Layout = () => {
           </div>
         </div>
       </Container>
+      <ScrollToTopButton />
     </>
   );
 };

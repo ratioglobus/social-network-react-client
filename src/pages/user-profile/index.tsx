@@ -1,4 +1,5 @@
-import { Button, Card, Image, useDisclosure } from "@nextui-org/react"
+import { Button, Image, useDisclosure } from "@nextui-org/react"
+import { Card as NextUICard } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom"
 import { resetUser, selectCurrent } from "../../features/userSlice";
@@ -13,13 +14,14 @@ import { ProfileInfo } from "../../components/profile-info";
 import { formatToClientDate } from "../../utils/format-to-client-date";
 import { CountInfo } from "../../components/count-info";
 import { EditProfile } from "../../components/edit-profile";
+import { ProfilePosts } from "../../components/profile-posts/ProfilePosts";
+
 
 export const UserProfile = () => {
   const { id } = useParams<{ id: string }>()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentUser = useSelector(selectCurrent);
   const { data } = useGetUserByIdQuery(id ?? '');
-
   const [followUser] = useFollowUserMutation();
   const [unfollowUser] = useUnfollowUserMutation();
   const [triggerGetUserByIdQuery] = useLazyGetUserByIdQuery();
@@ -33,17 +35,14 @@ export const UserProfile = () => {
   const handleFollow = async () => {
     try {
       if (id) {
-        data?.isFollowing ?
-          await unfollowUser(id).unwrap()
-          // @ts-ignore
-          : await followUser({ followingID: id }).unwrap()
+        data?.isFollowing
+          ? await unfollowUser(id).unwrap()
+          : await followUser({ followingId: id }).unwrap()
 
         await triggerGetUserByIdQuery(id);
         await triggerCurrentQuery()
       }
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
 
   const handleClose = async () => {
@@ -58,15 +57,13 @@ export const UserProfile = () => {
     }
   }
 
-  if (!data) {
-    return null
-  }
+  if (!data) return null;
 
   return (
     <>
       <GoBack />
       <div className="flex items-center gap-4">
-        <Card className="flex flex-col items-center text-center space-y-4 p-5 flex-2">
+        <NextUICard className="flex flex-col items-center text-center space-y-4 p-5 flex-2">
           <Image
             src={`${BASE_URL}${data.avatarUrl}`}
             alt={data.name}
@@ -83,34 +80,32 @@ export const UserProfile = () => {
                 className='gap-2'
                 onPress={handleFollow}
                 endContent={
-                  data?.isFollowing ? (
-                    <MdOutlinePersonAddDisabled />
-                  ) : (
-                    <MdOutlinePersonAddAlt1 />
-                  )
+                  data?.isFollowing ? <MdOutlinePersonAddDisabled /> : <MdOutlinePersonAddAlt1 />
                 }
               >
                 {data?.isFollowing ? 'Отписаться' : 'Подписаться'}
               </Button>
             ) : (
               <Button endContent={<CiEdit />} onPress={() => onOpen()}>Редактировать</Button>
-            )
-            }
+            )}
           </div>
-        </Card>
-        <Card className="flex flex-col space-y-4 p-5 flex-1">
+        </NextUICard>
+
+        <NextUICard className="flex flex-col space-y-4 p-5 flex-1">
           <ProfileInfo title="Почта" info={data.email} />
           <ProfileInfo title="Местоположение" info={data.location} />
           <ProfileInfo title="Дата рождения" info={formatToClientDate(data.dateOfBirth)} />
           <ProfileInfo title="Обо мне" info={data.bio} />
-
           <div className="flex gap-2">
             <CountInfo count={data.followers.length} title='Подписчики' />
             <CountInfo count={data.following.length} title='Подписки' />
           </div>
-        </Card>
+        </NextUICard>
       </div>
+
       <EditProfile isOpen={isOpen} onClose={handleClose} user={data} />
+
+      <ProfilePosts userId={id ?? ''} />
     </>
   )
 }

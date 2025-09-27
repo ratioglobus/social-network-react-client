@@ -148,7 +148,7 @@ export const Card: React.FC<Props> = ({
                             description={createAt && formatToClientDate(createAt)}
                         />
                     </Link>
-                    {authorId === currentUser?.id && (
+                    {authorId === currentUser?.id && cardFor !== "comment" && (
                         <div className="flex gap-3">
                             <div className="cursor-pointer" onClick={() => setIsEditing(true)}>
                                 <FiEdit size={16} />
