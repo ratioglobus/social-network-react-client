@@ -7,9 +7,9 @@ export const Auth = () => {
   const [selected, setSelected] = useState('login')
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="flex flex-col">
-        <Card className="max-w-full w-[340px] h-[450px]">
+    <div className="flex items-center justify-center h-screen p-4">
+      <div className="flex flex-col px-4 sm:px-0">
+        <Card className="max-w-full w-full sm:w-[340px] h-[370px]">
           <CardBody className="overflow-hidden">
             <Tabs
               fullWidth

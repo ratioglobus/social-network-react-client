@@ -1,6 +1,5 @@
 import { Card, CardBody, CardHeader, Image } from '@nextui-org/react'
 import { BASE_URL } from '../../constants'
-import { Link } from 'react-router-dom'
 import { User } from '../../app/types'
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 }
 
 export const Profile: React.FC<Props> = ({ user }) => {
-  const { name, email, avatarUrl, id } = user
+  const { name, email, avatarUrl } = user
 
   return (
     <div>
@@ -27,10 +26,6 @@ export const Profile: React.FC<Props> = ({ user }) => {
           <p className="text-default-500 flex items-center gap-2 mb-3">
             {email}
           </p>
-          <Link to={`/users/${id}`}>
-            <h4 className="text-s text-default-700 flex items-center gap-2 
-                 hover:text-default-900 transition-colors duration-200">Мой профиль</h4>
-          </Link>
         </CardBody>
       </Card>
     </div>

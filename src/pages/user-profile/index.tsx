@@ -37,7 +37,7 @@ export const UserProfile = () => {
       if (id) {
         data?.isFollowing
           ? await unfollowUser(id).unwrap()
-          : await followUser({ followingId: id }).unwrap()
+          : await followUser({ followingID: id }).unwrap()
 
         await triggerGetUserByIdQuery(id);
         await triggerCurrentQuery()
@@ -62,8 +62,8 @@ export const UserProfile = () => {
   return (
     <>
       <GoBack />
-      <div className="flex items-center gap-4">
-        <NextUICard className="flex flex-col items-center text-center space-y-4 p-5 flex-2">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4">
+        <NextUICard className="flex flex-col items-center text-center space-y-4 p-5 w-full lg:w-1/3">
           <Image
             src={`${BASE_URL}${data.avatarUrl}`}
             alt={data.name}
@@ -91,7 +91,7 @@ export const UserProfile = () => {
           </div>
         </NextUICard>
 
-        <NextUICard className="flex flex-col space-y-4 p-5 flex-1">
+        <NextUICard className="flex flex-col space-y-4 p-5 w-full lg:w-2/3">
           <ProfileInfo title="Почта" info={data.email} />
           <ProfileInfo title="Местоположение" info={data.location} />
           <ProfileInfo title="Дата рождения" info={formatToClientDate(data.dateOfBirth)} />

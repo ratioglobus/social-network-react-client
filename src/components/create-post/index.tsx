@@ -1,6 +1,6 @@
 import { useCreatePostMutation, useLazyGetAllPostsQuery } from '../../app/services/postsApi'
 import { Controller, useForm } from 'react-hook-form';
-import { Button, Textarea } from '@nextui-org/react';
+import { Textarea } from '@nextui-org/react';
 import { ErrorMessage } from '../error-message';
 import { useState } from 'react';
 
@@ -20,7 +20,6 @@ export const CreatePost = () => {
 
     const onSubmit = handleSubmit(async (data) => {
         try {
-
             const formData = new FormData();
             formData.append("content", data.post);
 
@@ -55,15 +54,16 @@ export const CreatePost = () => {
                 render={({ field }) => (
                     <Textarea
                         {...field}
-                        labelPlacement='outside'
                         placeholder='О чем думаете?'
-                        className='mb-5'
+                        minRows={3}
+                        className='mb-3 text-sm sm:text-base'
+                        labelPlacement='outside'
                     />
                 )}
             />
 
-            <div className="flex items-center gap-3 mb-5">
-                <label className="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-3">
+                <label className="px-3 py-1 bg-blue-500 text-white text-sm sm:text-base rounded-md cursor-pointer hover:bg-blue-600">
                     Прикрепить фото
                     <input
                         type="file"
@@ -74,20 +74,21 @@ export const CreatePost = () => {
                     />
                 </label>
 
-                {selectedFile && <span className="text-sm text-gray-900 dark:text-gray-100">{selectedFile.name}</span>}
+                {selectedFile && (
+                    <span className="text-xs sm:text-sm text-gray-900 dark:text-gray-100 truncate max-w-full">
+                        {selectedFile.name}
+                    </span>
+                )}
 
-                <Button
-                    color='success'
-                    type='submit'
-                    className="px-4 py-2 bg-green-500 text-base text-white rounded-md cursor-pointer hover:bg-green-600"
-                   
+                <button
+                    type="submit"
+                    className="px-3 py-1 bg-green-500 text-white text-sm sm:text-base rounded-md hover:bg-green-600"
                 >
                     Опубликовать пост
-                </Button>
+                </button>
             </div>
 
             {error && <ErrorMessage error={error} />}
         </form>
     )
-
 }

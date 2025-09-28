@@ -22,7 +22,7 @@ export type Follows = {
   follower: User
   followerId: string
   following: User
-  followingId: string
+  followingID: string
 }
 
 export type Post = {
